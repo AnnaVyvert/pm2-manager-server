@@ -1,0 +1,2 @@
+curl --header "$ACCESS_KEY_NAME: $ACCESS_KEY" $ADRESS
+curl -H "access-key: ..." -H "script-key: ..." URL
