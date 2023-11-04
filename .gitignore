@@ -1,0 +1,3 @@
+__pycache__/
+src/server/.env
+src/server/test.py
