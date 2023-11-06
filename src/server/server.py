@@ -76,15 +76,21 @@ def refresh(key):
   try:
     # launch_sh_wrap(SCR_CHECK_UPDATE_PATH, const_source, 'repo in already up to date | ')
     launch_sh_wrap(SCR_STOP_PM2_PATH, const_source, 'stop process by name with pm2 was failed | ')
-    launch_sh_wrap(SCR_UPDATE_REPO_PATH, const_source, 'git pull script failed | ')
+    launch_sh_wrap_update_repo(SCR_UPDATE_REPO_PATH, const_source, 'git pull script failed | ', get_project_branch(key))
     launch_sh_wrap(SCR_RESTART_PM2_PATH, const_source, 'restart process by name with pm2 was failed | ')
   except Exception as e:
     return e
 
   return 'success, project is reloading...'
 
+def launch_sh_wrap_update_repo(path, const_source, msg, branch):
+  print('path: {0} source: {1} branch: {2}'.format(path, const_source, branch))
+  result = str(subprocess.check_output([path, const_source, branch]))
+  if SUCCESS_COMPLETE not in result:
+    raise msg + path + '\n'
+
 def launch_sh_wrap(path, const_source, msg):
-  print('path: ', path, 'source: ', const_source)
+  print('path: {0} source: {1}'.format(path, const_source))
   result = str(subprocess.check_output([path, const_source]))
   if SUCCESS_COMPLETE not in result:
     raise msg + path + '\n'
@@ -97,6 +103,11 @@ def get_script_consts_source(key):
     SCRIPT_KEY_STUDENT_RATING: directory+"consts-student-rating.sh"
   }[key]
 
+def get_project_branch(key):
+  return {
+    SCRIPT_KEY_RATING_TEAMS: "main",
+    SCRIPT_KEY_STUDENT_RATING: "master"
+  }[key]
 
 def run():
   app.run(host='0.0.0.0', port=PORT)
